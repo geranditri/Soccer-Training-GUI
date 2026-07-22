@@ -228,7 +228,7 @@ backButton.MouseButton1Click:Connect(function()
 end)
 
 -- ====================================================
--- LOGIKA AUTO TRAINING (3x Eksekusi per 0.1 Detik)
+-- LOGIKA AUTO TRAINING (5x Eksekusi per 0.1 Detik)
 -- ====================================================
 local isTraining = false
 
@@ -240,7 +240,7 @@ trainButton.MouseButton1Click:Connect(function()
 		task.spawn(function()
 			while isTraining do
 				-- Eksekusi perintah 3 kali secara langsung
-				for i = 1, 3 do
+				for i = 1, 5 do
 					trainEvent:FireServer()
 				end
 				-- Beri delay 0.1 detik setelah 3 kali eksekusi
