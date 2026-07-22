@@ -228,7 +228,7 @@ backButton.MouseButton1Click:Connect(function()
 end)
 
 -- ====================================================
--- LOGIKA AUTO TRAINING
+-- LOGIKA AUTO TRAINING (3x Eksekusi per 0.1 Detik)
 -- ====================================================
 local isTraining = false
 
@@ -239,7 +239,11 @@ trainButton.MouseButton1Click:Connect(function()
 		trainButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 		task.spawn(function()
 			while isTraining do
-				trainEvent:FireServer()
+				-- Eksekusi perintah 3 kali secara langsung
+				for i = 1, 3 do
+					trainEvent:FireServer()
+				end
+				-- Beri delay 0.1 detik setelah 3 kali eksekusi
 				task.wait(0.1)
 			end
 		end)
