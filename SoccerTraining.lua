@@ -154,7 +154,6 @@ local eggData = {
 	{ ID = "Desert", Name = "Desert Egg", Label = "Desert (75 M)" },
 	{ ID = "Pyramid", Name = "Pyramid Egg", Label = "Pyramid (20 B)" },
 	{ ID = "Cactus", Name = "Cactus Egg", Label = "Cactus (1 T)" },
-	-- 3 Telur Sebelumnya:
 	{ ID = "Mystic", Name = "Mystic Egg", Label = "Mystic (1 Qd)" },
 	{ ID = "WorldCup", Name = "World Cup Egg", Label = "World Cup (750 Qd)" },
 	{ ID = "Dice", Name = "Dice Egg", Label = "Dice (150 Qn)" },
@@ -193,7 +192,7 @@ footerLabel.Name = "FooterLabel"
 footerLabel.Size = UDim2.new(1, 0, 0, 16)
 footerLabel.Position = UDim2.new(0, 0, 1, -18)
 footerLabel.BackgroundTransparency = 1
-footerLabel.Text = "Made by Trouble Maker"
+footerLabel.Text = "Made by TroubleMaker"
 footerLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
 footerLabel.Font = Enum.Font.SourceSansItalic
 footerLabel.TextSize = 11
@@ -228,7 +227,7 @@ backButton.MouseButton1Click:Connect(function()
 end)
 
 -- ====================================================
--- LOGIKA AUTO TRAINING (10x Eksekusi per 0.1 Detik)
+-- LOGIKA AUTO TRAINING
 -- ====================================================
 local isTraining = false
 
@@ -239,11 +238,9 @@ trainButton.MouseButton1Click:Connect(function()
 		trainButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 		task.spawn(function()
 			while isTraining do
-				-- Eksekusi perintah 3 kali secara langsung
 				for i = 1, 10 do
 					trainEvent:FireServer()
 				end
-				-- Beri delay 0.1 detik setelah 3 kali eksekusi
 				task.wait(0.1)
 			end
 		end)
@@ -283,7 +280,7 @@ local function selectEgg(targetID)
 		
 		while selectedEggID == currentActiveID do
 			hatchEvent:FireServer(eggName, "Triple")
-			task.wait(0.1)
+			task.wait(1)
 		end
 	end)
 end
