@@ -74,8 +74,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Membuat Window Utama
 local Window = Rayfield:CreateWindow({
-   Name = "⚽ Soccer Training Hub",
-   LoadingTitle = "Loading Hub...",
+   Name = "⚽ Soccer Training",
+   LoadingTitle = "Loading Script...",
    LoadingSubtitle = "by TroubleMaker",
    ConfigurationSaving = {
       Enabled = false,
