@@ -161,7 +161,8 @@ local eggData = {
 
 local eggButtons = {}
 local selectedEggID = nil
-local isScriptActive = true -- Flag untuk menghentikan semua loop saat GUI di-destroy
+local isScriptActive = true 
+local isTraining = false 
 
 for i, data in ipairs(eggData) do
 	local btn = Instance.new("TextButton")
@@ -202,17 +203,9 @@ footerLabel.Parent = mainFrame
 -- ====================================================
 -- REFERENSI REMOTE EVENT
 -- ====================================================
-local knitServices = ReplicatedStorage:WaitForChild("Library")
-	:WaitForChild("Knit")
-	:WaitForChild("Services")
-
-local trainEvent = knitServices:WaitForChild("TrainingService")
-	:WaitForChild("RE")
-	:WaitForChild("Train")
-
-local hatchEvent = knitServices:WaitForChild("EggsService")
-	:WaitForChild("RE")
-	:WaitForChild("HatchEgg")
+local knitServices = ReplicatedStorage:WaitForChild("Library"):WaitForChild("Knit"):WaitForChild("Services")
+local trainEvent = knitServices:WaitForChild("TrainingService"):WaitForChild("RE"):WaitForChild("Train")
+local hatchEvent = knitServices:WaitForChild("EggsService"):WaitForChild("RE"):WaitForChild("HatchEgg")
 
 -- ====================================================
 -- LOGIKA PERPINDAHAN TAMPILAN SUB-MENU
@@ -228,54 +221,55 @@ backButton.MouseButton1Click:Connect(function()
 end)
 
 -- ====================================================
--- LOGIKA AUTO TRAINING
+-- LOGIKA AUTO TRAINING & HATCHING (SINGLE LOOP ARCHITECTURE)
 -- ====================================================
-local isTraining = false
+-- Loop untuk Training agar kebal Spam Click
+task.spawn(function()
+	while isScriptActive do
+		if isTraining then
+			for i = 1, 10 do
+				trainEvent:FireServer()
+			end
+			task.wait(0.1)
+		else
+			task.wait(0.1) -- Idle
+		end
+	end
+end)
 
+-- Loop Utama untuk Hatching
+task.spawn(function()
+	while isScriptActive do
+		if selectedEggID and eggButtons[selectedEggID] then
+			local eggName = eggButtons[selectedEggID].Data.Name
+			hatchEvent:FireServer(eggName, "Triple")
+			task.wait(1) 
+		else
+			task.wait(0.2) 
+		end
+	end
+end)
+
+-- Tombol Toggle Training
 trainButton.MouseButton1Click:Connect(function()
 	isTraining = not isTraining
 	if isTraining then
 		trainButton.Text = "Status: ON"
 		trainButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-		task.spawn(function()
-			while isTraining and isScriptActive do
-				for i = 1, 10 do
-					trainEvent:FireServer()
-				end
-				task.wait(0.1)
-			end
-		end)
 	else
 		trainButton.Text = "Status: OFF"
 		trainButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 	end
 end)
 
--- ====================================================
--- LOGIKA SINGLE SELECTION & LOOP HATCHING (BERSIH)
--- ====================================================
--- Single Loop Utama untuk Hatching
-task.spawn(function()
-	while isScriptActive do
-		if selectedEggID and eggButtons[selectedEggID] then
-			local eggName = eggButtons[selectedEggID].Data.Name
-			hatchEvent:FireServer(eggName, "Triple")
-			task.wait(1) -- Interval hatch
-		else
-			task.wait(0.2) -- IDLE wait jika tidak ada telur dipilih
-		end
-	end
-end)
-
+-- Tombol Select Egg
 local function selectEgg(targetID)
-	-- Toggle OFF jika klik telur yang sama
 	if selectedEggID == targetID then
 		selectedEggID = nil
 	else
 		selectedEggID = targetID
 	end
 
-	-- Update Tampilan UI Saja
 	for id, item in pairs(eggButtons) do
 		if id == selectedEggID then
 			item.Button.Text = item.Data.Label .. ": ON"
@@ -294,19 +288,10 @@ for id, item in pairs(eggButtons) do
 end
 
 -- ====================================================
--- LOGIKA TOMBOL CLOSE (X)
--- ====================================================
-closeButton.MouseButton1Click:Connect(function()
-	isScriptActive = false -- Matikan semua loop permanen
-	isTraining = false
-	selectedEggID = nil
-	screenGui:Destroy()
-end)
-
--- ====================================================
 -- SISTEM DRAGGABLE
 -- ====================================================
 local dragging, dragInput, dragStart, startPos
+local dragConnection -- Deklarasi koneksi global agar bisa diputus nanti
 
 local function update(input)
 	local delta = input.Position - dragStart
@@ -338,8 +323,26 @@ mainFrame.InputChanged:Connect(function(input)
 	end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
+-- Simpan koneksi ke variabel global
+dragConnection = UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then
 		update(input)
 	end
+end)
+
+-- ====================================================
+-- LOGIKA TOMBOL CLOSE (X) & CLEANUP
+-- ====================================================
+closeButton.MouseButton1Click:Connect(function()
+	isScriptActive = false -- Hentikan loop permanen Training & Hatching
+	isTraining = false
+	selectedEggID = nil
+	
+	-- Disconnect layanan global untuk mencegah Memory Leak
+	if dragConnection then
+		dragConnection:Disconnect()
+		dragConnection = nil
+	end
+	
+	screenGui:Destroy()
 end)
