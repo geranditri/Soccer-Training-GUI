@@ -146,7 +146,7 @@ listLayout.Parent = scrollFrame
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 listLayout.Padding = UDim.new(0, 4)
 
--- DATA DAFTAR TELUR (6 Telur Baru ditaruh di Atas)
+-- DATA DAFTAR TELUR
 local eggData = {
 	{ ID = "Basic", Name = "Basic Egg", Label = "Basic (75)" },
 	{ ID = "Dragon", Name = "Dragon Egg", Label = "Dragon (3 K)" },
@@ -160,7 +160,7 @@ local eggData = {
 }
 
 local eggButtons = {}
-local selectedEggID = nil 
+local selectedEggID = nil
 
 for i, data in ipairs(eggData) do
 	local btn = Instance.new("TextButton")
@@ -238,7 +238,7 @@ trainButton.MouseButton1Click:Connect(function()
 		trainButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 		task.spawn(function()
 			while isTraining do
-				for i = 1, 10 do
+				for i = 1, 10 do -- Interval Training
 					trainEvent:FireServer()
 				end
 				task.wait(0.1)
@@ -280,7 +280,7 @@ local function selectEgg(targetID)
 		
 		while selectedEggID == currentActiveID do
 			hatchEvent:FireServer(eggName, "Triple")
-			task.wait(1)
+			task.wait(1) -- Interval hatch
 		end
 	end)
 end
