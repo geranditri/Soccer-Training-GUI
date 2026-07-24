@@ -161,6 +161,7 @@ local eggData = {
 
 local eggButtons = {}
 local selectedEggID = nil
+local isScriptActive = true -- Flag untuk menghentikan semua loop saat GUI di-destroy
 
 for i, data in ipairs(eggData) do
 	local btn = Instance.new("TextButton")
@@ -237,8 +238,8 @@ trainButton.MouseButton1Click:Connect(function()
 		trainButton.Text = "Status: ON"
 		trainButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 		task.spawn(function()
-			while isTraining do
-				for i = 1, 10 do -- Interval Training
+			while isTraining and isScriptActive do
+				for i = 1, 10 do
 					trainEvent:FireServer()
 				end
 				task.wait(0.1)
@@ -251,19 +252,30 @@ trainButton.MouseButton1Click:Connect(function()
 end)
 
 -- ====================================================
--- LOGIKA SINGLE SELECTION (HATCH EGG)
+-- LOGIKA SINGLE SELECTION & LOOP HATCHING (BERSIH)
 -- ====================================================
+-- Single Loop Utama untuk Hatching
+task.spawn(function()
+	while isScriptActive do
+		if selectedEggID and eggButtons[selectedEggID] then
+			local eggName = eggButtons[selectedEggID].Data.Name
+			hatchEvent:FireServer(eggName, "Triple")
+			task.wait(1) -- Interval hatch
+		else
+			task.wait(0.2) -- IDLE wait jika tidak ada telur dipilih
+		end
+	end
+end)
+
 local function selectEgg(targetID)
+	-- Toggle OFF jika klik telur yang sama
 	if selectedEggID == targetID then
 		selectedEggID = nil
-		local item = eggButtons[targetID]
-		item.Button.Text = item.Data.Label .. ": OFF"
-		item.Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-		return
+	else
+		selectedEggID = targetID
 	end
 
-	selectedEggID = targetID
-
+	-- Update Tampilan UI Saja
 	for id, item in pairs(eggButtons) do
 		if id == selectedEggID then
 			item.Button.Text = item.Data.Label .. ": ON"
@@ -273,16 +285,6 @@ local function selectEgg(targetID)
 			item.Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 		end
 	end
-
-	task.spawn(function()
-		local currentActiveID = selectedEggID
-		local eggName = eggButtons[currentActiveID].Data.Name
-		
-		while selectedEggID == currentActiveID do
-			hatchEvent:FireServer(eggName, "Triple")
-			task.wait(1) -- Interval hatch
-		end
-	end)
 end
 
 for id, item in pairs(eggButtons) do
@@ -295,6 +297,7 @@ end
 -- LOGIKA TOMBOL CLOSE (X)
 -- ====================================================
 closeButton.MouseButton1Click:Connect(function()
+	isScriptActive = false -- Matikan semua loop permanen
 	isTraining = false
 	selectedEggID = nil
 	screenGui:Destroy()
