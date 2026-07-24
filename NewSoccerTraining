@@ -1,0 +1,147 @@
+-- ====================================================
+-- REFERENSI REMOTE EVENT & SERVICES
+-- ====================================================
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local knitServices = ReplicatedStorage:WaitForChild("Library"):WaitForChild("Knit"):WaitForChild("Services")
+local trainEvent = knitServices:WaitForChild("TrainingService"):WaitForChild("RE"):WaitForChild("Train")
+local hatchEvent = knitServices:WaitForChild("EggsService"):WaitForChild("RE"):WaitForChild("HatchEgg")
+
+-- ====================================================
+-- VARIABEL SISTEM
+-- ====================================================
+local isScriptActive = true
+local isTraining = false
+local isHatching = false
+local selectedEggName = nil
+
+-- Data Mapping Telur (Label UI -> Nama Asli Telur untuk Server)
+local eggData = {
+	["Basic (75)"] = "Basic Egg",
+	["Dragon (3 K)"] = "Dragon Egg",
+	["Bee (200 K)"] = "Bee Egg",
+	["Desert (75 M)"] = "Desert Egg",
+	["Pyramid (20 B)"] = "Pyramid Egg",
+	["Cactus (1 T)"] = "Cactus Egg",
+	["Mystic (1 Qd)"] = "Mystic Egg",
+	["World Cup (750 Qd)"] = "World Cup Egg",
+	["Dice (150 Qn)"] = "Dice Egg"
+}
+
+local eggOptions = {
+	"Basic (75)", "Dragon (3 K)", "Bee (200 K)", "Desert (75 M)", 
+	"Pyramid (20 B)", "Cactus (1 T)", "Mystic (1 Qd)", "World Cup (750 Qd)", "Dice (150 Qn)"
+}
+
+-- Default telur saat pertama kali jalan
+selectedEggName = eggData["Basic (75)"]
+
+-- ====================================================
+-- LOOP ABADI (KEBAL SPAM & MEMORY LEAK)
+-- ====================================================
+-- Loop Auto Train
+task.spawn(function()
+	while isScriptActive do
+		if isTraining then
+			for i = 1, 10 do
+				pcall(function() trainEvent:FireServer() end) -- pcall mencegah script error jika game nge-lag
+			end
+			task.wait(0.1)
+		else
+			task.wait(0.1)
+		end
+	end
+end)
+
+-- Loop Auto Hatch
+task.spawn(function()
+	while isScriptActive do
+		if isHatching and selectedEggName then
+			pcall(function() hatchEvent:FireServer(selectedEggName, "Triple") end)
+			task.wait(1)
+		else
+			task.wait(0.2)
+		end
+	end
+end)
+
+-- ====================================================
+-- RAYFIELD UI SETUP
+-- ====================================================
+-- Memanggil Rayfield Library
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Membuat Window Utama
+local Window = Rayfield:CreateWindow({
+   Name = "⚽ Soccer Training Hub",
+   LoadingTitle = "Loading Hub...",
+   LoadingSubtitle = "by TroubleMaker",
+   ConfigurationSaving = {
+      Enabled = false,
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true 
+   },
+   KeySystem = false -- Matikan sistem kunci sandi
+})
+
+-- ====================================================
+-- MEMBUAT TAB & ELEMEN UI
+-- ====================================================
+-- Tab 1: Utama / Farm
+local FarmTab = Window:CreateTab("Auto Farm", 4483345998) -- 4483345998 adalah ID Icon (gambar pedang/petir)
+
+FarmTab:CreateSection("Training")
+
+local TrainToggle = FarmTab:CreateToggle({
+   Name = "Auto Train",
+   CurrentValue = false,
+   Flag = "TrainToggle", 
+   Callback = function(Value)
+       isTraining = Value
+   end,
+})
+
+FarmTab:CreateSection("Credits")
+local InfoLabel = FarmTab:CreateLabel("Script by TroubleMaker")
+
+-- Tab 2: Hatch Eggs
+local HatchTab = Window:CreateTab("Hatch Eggs", 4483362458) -- ID Icon telur/bintang
+
+HatchTab:CreateSection("Egg Selection")
+
+local EggDropdown = HatchTab:CreateDropdown({
+   Name = "Pilih Telur",
+   Options = eggOptions,
+   CurrentOption = {"Basic (75)"},
+   MultipleOptions = false,
+   Flag = "EggDropdown",
+   Callback = function(Option)
+	   -- Mengambil nama telur asli dari Dictionary eggData berdasarkan opsi yang dipilih
+       selectedEggName = eggData[Option[1]] 
+   end,
+})
+
+HatchTab:CreateSection("Hatching System")
+
+local HatchToggle = HatchTab:CreateToggle({
+   Name = "Auto Hatch (Triple)",
+   CurrentValue = false,
+   Flag = "HatchToggle",
+   Callback = function(Value)
+       isHatching = Value
+   end,
+})
+
+-- Fitur untuk mematikan script sepenuhnya (Clean Exit)
+local MiscTab = Window:CreateTab("Misc", 4483362458)
+MiscTab:CreateButton({
+   Name = "Destroy Script (Tutup UI)",
+   Callback = function()
+       isScriptActive = false -- Hentikan semua Loop
+       Rayfield:Destroy() -- Hapus UI secara aman
+   end,
+})
