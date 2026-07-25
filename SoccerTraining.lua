@@ -5,13 +5,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- 1. ScreenGui Utama
+-- ====================================================
+-- 1. SETUP GUI UTAMA
+-- ====================================================
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SoccerTrainingGui"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
--- 2. Frame Utama
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 220, 0, 185)
@@ -25,34 +26,32 @@ local frameCorner = Instance.new("UICorner")
 frameCorner.CornerRadius = UDim.new(0, 8)
 frameCorner.Parent = mainFrame
 
--- 3. Judul GUI ("Soccer Training")
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Name = "TitleLabel"
 titleLabel.Size = UDim2.new(1, -30, 0, 25)
 titleLabel.Position = UDim2.new(0, 10, 0, 5)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Soccer Training"
+titleLabel.Text = "⚽ Soccer Training"
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.TextSize = 16
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = mainFrame
 
--- 4. Tombol Close (X)
 local closeButton = Instance.new("TextButton")
 closeButton.Name = "CloseButton"
 closeButton.Size = UDim2.new(0, 20, 0, 20)
 closeButton.Position = UDim2.new(1, -25, 0, 5)
 closeButton.BackgroundTransparency = 1
 closeButton.Text = "X"
-closeButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+closeButton.TextColor3 = Color3.fromRGB(200, 50, 50)
 closeButton.Font = Enum.Font.SourceSansBold
-closeButton.TextSize = 14
+closeButton.TextSize = 16
 closeButton.Parent = mainFrame
 
--- ----------------------------------------------------
--- VIEW 1: HALAMAN UTAMA (AUTO TRAINING)
--- ----------------------------------------------------
+-- ====================================================
+-- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING)
+-- ====================================================
 local mainView = Instance.new("Frame")
 mainView.Name = "MainView"
 mainView.Size = UDim2.new(1, 0, 1, -45)
@@ -61,51 +60,33 @@ mainView.BackgroundTransparency = 1
 mainView.Visible = true
 mainView.Parent = mainFrame
 
-local subTitleLabel = Instance.new("TextLabel")
-subTitleLabel.Name = "SubTitleLabel"
-subTitleLabel.Size = UDim2.new(1, -20, 0, 18)
-subTitleLabel.Position = UDim2.new(0, 10, 0, 0)
-subTitleLabel.BackgroundTransparency = 1
-subTitleLabel.Text = "Auto Training"
-subTitleLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-subTitleLabel.Font = Enum.Font.SourceSans
-subTitleLabel.TextSize = 14
-subTitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-subTitleLabel.Parent = mainView
-
 local trainButton = Instance.new("TextButton")
 trainButton.Name = "TrainButton"
-trainButton.Size = UDim2.new(0, 200, 0, 30)
-trainButton.Position = UDim2.new(0, 10, 0, 22)
+trainButton.Size = UDim2.new(0, 200, 0, 32)
+trainButton.Position = UDim2.new(0, 10, 0, 15)
 trainButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 trainButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-trainButton.Text = "Status: OFF"
+trainButton.Text = "Auto Train: OFF"
 trainButton.Font = Enum.Font.SourceSansBold
-trainButton.TextSize = 13
+trainButton.TextSize = 14
 trainButton.Parent = mainView
-
-local trainCorner = Instance.new("UICorner")
-trainCorner.CornerRadius = UDim.new(0, 6)
-trainCorner.Parent = trainButton
+Instance.new("UICorner", trainButton).CornerRadius = UDim.new(0, 6)
 
 local openHatchMenuBtn = Instance.new("TextButton")
 openHatchMenuBtn.Name = "OpenHatchMenuBtn"
-openHatchMenuBtn.Size = UDim2.new(0, 200, 0, 30)
-openHatchMenuBtn.Position = UDim2.new(0, 10, 0, 60)
+openHatchMenuBtn.Size = UDim2.new(0, 200, 0, 32)
+openHatchMenuBtn.Position = UDim2.new(0, 10, 0, 55)
 openHatchMenuBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 150)
 openHatchMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-openHatchMenuBtn.Text = "🥚 Hatch Egg Menu"
+openHatchMenuBtn.Text = "🥚 Buka Menu Telur"
 openHatchMenuBtn.Font = Enum.Font.SourceSansBold
-openHatchMenuBtn.TextSize = 13
+openHatchMenuBtn.TextSize = 14
 openHatchMenuBtn.Parent = mainView
+Instance.new("UICorner", openHatchMenuBtn).CornerRadius = UDim.new(0, 6)
 
-local openHatchCorner = Instance.new("UICorner")
-openHatchCorner.CornerRadius = UDim.new(0, 6)
-openHatchCorner.Parent = openHatchMenuBtn
-
--- ----------------------------------------------------
--- VIEW 2: HALAMAN SUB-MENU (HATCH EGG)
--- ----------------------------------------------------
+-- ====================================================
+-- 3. VIEW 2: HALAMAN SUB-MENU (HATCH EGG)
+-- ====================================================
 local hatchView = Instance.new("Frame")
 hatchView.Name = "HatchView"
 hatchView.Size = UDim2.new(1, 0, 1, -45)
@@ -120,16 +101,12 @@ backButton.Size = UDim2.new(0, 200, 0, 22)
 backButton.Position = UDim2.new(0, 10, 0, 0)
 backButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 backButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-backButton.Text = "⬅️ Kembali ke Menu"
+backButton.Text = "⬅️ Kembali"
 backButton.Font = Enum.Font.SourceSansBold
 backButton.TextSize = 12
 backButton.Parent = hatchView
+Instance.new("UICorner", backButton).CornerRadius = UDim.new(0, 4)
 
-local backCorner = Instance.new("UICorner")
-backCorner.CornerRadius = UDim.new(0, 4)
-backCorner.Parent = backButton
-
--- SCROLLING FRAME UNTUK DAFTAR TELUR
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Name = "EggScrollFrame"
 scrollFrame.Size = UDim2.new(0, 200, 0, 105)
@@ -140,13 +117,11 @@ scrollFrame.ScrollBarThickness = 4
 scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(120, 120, 120)
 scrollFrame.Parent = hatchView
 
--- Layout Otomatis
 local listLayout = Instance.new("UIListLayout")
 listLayout.Parent = scrollFrame
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 listLayout.Padding = UDim.new(0, 4)
 
--- DATA DAFTAR TELUR
 local eggData = {
 	{ ID = "Basic", Name = "Basic Egg", Label = "Basic (75)" },
 	{ ID = "Dragon", Name = "Dragon Egg", Label = "Dragon (3 K)" },
@@ -157,6 +132,12 @@ local eggData = {
 	{ ID = "Mystic", Name = "Mystic Egg", Label = "Mystic (1 Qd)" },
 	{ ID = "WorldCup", Name = "World Cup Egg", Label = "World Cup (750 Qd)" },
 	{ ID = "Dice", Name = "Dice Egg", Label = "Dice (150 Qn)" },
+	{ ID = "Atlantis"; Name = "Atlantis Egg", Label = "Atlantis (50 Sx)"},
+	{ ID = "Kraken"; Name = "Kraken Egg", Label = "Kraken (2 Sp)"},
+	{ ID = "Abyss"; Name = "Abyss Egg", Label = "Abyss (75 Sp)"},
+	{ ID = "Space"; Name = "Space Egg", Label = "Space (250 Oc)"},
+	{ ID = "Alien"; Name = "Alien Egg", Label = "Alien (100 No)"},
+	{ ID = "Martian"; Name = "Martian Egg", Label = "Martian (3.5 De)"},
 }
 
 local eggButtons = {}
@@ -175,41 +156,33 @@ for i, data in ipairs(eggData) do
 	btn.Font = Enum.Font.SourceSansBold
 	btn.TextSize = 12
 	btn.Parent = scrollFrame
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 5)
-	corner.Parent = btn
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
 
 	eggButtons[data.ID] = { Button = btn, Data = data }
 end
 
--- Otomatis Menyesuaikan Panjang Area Scroll
 listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	scrollFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
 end)
 
--- Watermark Footer
 local footerLabel = Instance.new("TextLabel")
 footerLabel.Name = "FooterLabel"
 footerLabel.Size = UDim2.new(1, 0, 0, 16)
 footerLabel.Position = UDim2.new(0, 0, 1, -18)
 footerLabel.BackgroundTransparency = 1
-footerLabel.Text = "Made by TroubleMaker"
+footerLabel.Text = "[RightShift] to Hide/Show"
 footerLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
 footerLabel.Font = Enum.Font.SourceSansItalic
 footerLabel.TextSize = 11
 footerLabel.Parent = mainFrame
 
 -- ====================================================
--- REFERENSI REMOTE EVENT
+-- 4. REMOTE EVENT & LOGIKA SISTEM UTAMA
 -- ====================================================
 local knitServices = ReplicatedStorage:WaitForChild("Library"):WaitForChild("Knit"):WaitForChild("Services")
 local trainEvent = knitServices:WaitForChild("TrainingService"):WaitForChild("RE"):WaitForChild("Train")
 local hatchEvent = knitServices:WaitForChild("EggsService"):WaitForChild("RE"):WaitForChild("HatchEgg")
 
--- ====================================================
--- LOGIKA PERPINDAHAN TAMPILAN SUB-MENU
--- ====================================================
 openHatchMenuBtn.MouseButton1Click:Connect(function()
 	mainView.Visible = false
 	hatchView.Visible = true
@@ -220,29 +193,24 @@ backButton.MouseButton1Click:Connect(function()
 	mainView.Visible = true
 end)
 
--- ====================================================
--- LOGIKA AUTO TRAINING & HATCHING (SINGLE LOOP ARCHITECTURE)
--- ====================================================
--- Loop untuk Training agar kebal Spam Click
 task.spawn(function()
 	while isScriptActive do
 		if isTraining then
 			for i = 1, 10 do
-				trainEvent:FireServer()
+				pcall(function() trainEvent:FireServer() end)
 			end
 			task.wait(0.1)
 		else
-			task.wait(0.1) -- Idle
+			task.wait(0.1) 
 		end
 	end
 end)
 
--- Loop Utama untuk Hatching
 task.spawn(function()
 	while isScriptActive do
 		if selectedEggID and eggButtons[selectedEggID] then
 			local eggName = eggButtons[selectedEggID].Data.Name
-			hatchEvent:FireServer(eggName, "Triple")
+			pcall(function() hatchEvent:FireServer(eggName, "Triple") end)
 			task.wait(1) 
 		else
 			task.wait(0.2) 
@@ -250,19 +218,17 @@ task.spawn(function()
 	end
 end)
 
--- Tombol Toggle Training
 trainButton.MouseButton1Click:Connect(function()
 	isTraining = not isTraining
 	if isTraining then
-		trainButton.Text = "Status: ON"
+		trainButton.Text = "Auto Train: ON"
 		trainButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 	else
-		trainButton.Text = "Status: OFF"
+		trainButton.Text = "Auto Train: OFF"
 		trainButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 	end
 end)
 
--- Tombol Select Egg
 local function selectEgg(targetID)
 	if selectedEggID == targetID then
 		selectedEggID = nil
@@ -288,11 +254,13 @@ for id, item in pairs(eggButtons) do
 end
 
 -- ====================================================
--- SISTEM DRAGGABLE
+-- 5. SISTEM DRAGGABLE, HOTKEY, & CLEANUP
 -- ====================================================
 local dragging, dragInput, dragStart, startPos
-local dragConnection -- Deklarasi koneksi global agar bisa diputus nanti
+local dragConnection
+local toggleConnection -- Variabel untuk hotkey
 
+-- Logika Draggable
 local function update(input)
 	local delta = input.Position - dragStart
 	mainFrame.Position = UDim2.new(
@@ -323,25 +291,36 @@ mainFrame.InputChanged:Connect(function(input)
 	end
 end)
 
--- Simpan koneksi ke variabel global
 dragConnection = UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then
 		update(input)
 	end
 end)
 
--- ====================================================
--- LOGIKA TOMBOL CLOSE (X) & CLEANUP
--- ====================================================
+-- Logika Hotkey RightShift untuk Sembunyikan GUI
+toggleConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	-- Pengecekan ini memastikan UI tidak tertutup saat kamu mengetik di Chat
+	if gameProcessed then return end 
+
+	if input.KeyCode == Enum.KeyCode.RightShift then
+		screenGui.Enabled = not screenGui.Enabled
+	end
+end)
+
+-- Tombol X (Destroy & Cleanup Memory)
 closeButton.MouseButton1Click:Connect(function()
-	isScriptActive = false -- Hentikan loop permanen Training & Hatching
+	isScriptActive = false
 	isTraining = false
 	selectedEggID = nil
 	
-	-- Disconnect layanan global untuk mencegah Memory Leak
 	if dragConnection then
 		dragConnection:Disconnect()
 		dragConnection = nil
+	end
+	
+	if toggleConnection then
+		toggleConnection:Disconnect()
+		toggleConnection = nil
 	end
 	
 	screenGui:Destroy()
