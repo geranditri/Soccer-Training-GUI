@@ -21,6 +21,7 @@ mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
 mainFrame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
@@ -49,6 +50,21 @@ closeButton.TextColor3 = Color3.fromRGB(200, 50, 50)
 closeButton.Font = Enum.Font.SourceSansBold
 closeButton.TextSize = 16
 closeButton.Parent = mainFrame
+
+-- ====================================================
+-- WATERMARK SCRIPT
+-- ====================================================
+local watermarkLabel = Instance.new("TextLabel")
+watermarkLabel.Name = "WatermarkLabel"
+watermarkLabel.Size = UDim2.new(0, 100, 0, 15)
+watermarkLabel.Position = UDim2.new(1, -105, 1, -15) -- Posisi di pojok kanan bawah UI
+watermarkLabel.BackgroundTransparency = 1
+watermarkLabel.Text = "Made by TroubleMaker" -- UBAH TEKS INI SESUAI NAMA KAMU
+watermarkLabel.TextColor3 = Color3.fromRGB(100, 100, 100) -- Warna abu-abu samar
+watermarkLabel.Font = Enum.Font.SourceSansBold
+watermarkLabel.TextSize = 10
+watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right
+watermarkLabel.Parent = mainFrame
 
 -- ====================================================
 -- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING)
@@ -133,18 +149,18 @@ local eggData = {
 	{ ID = "Mystic", Name = "Mystic Egg", Label = "Mystic (1 Qd)" },
 	{ ID = "WorldCup", Name = "World Cup Egg", Label = "World Cup (750 Qd)" },
 	{ ID = "Dice", Name = "Dice Egg", Label = "Dice (150 Qn)" },
-	{ ID = "Atlantis", Name = "Atlantis Egg", Label = "Atlantis (50 Sx)"},
-	{ ID = "Kraken", Name = "Kraken Egg", Label = "Kraken (2 Sp)"},
-	{ ID = "Abyss", Name = "Abyss Egg", Label = "Abyss (75 Sp)"},
-	{ ID = "Space", Name = "Space Egg", Label = "Space (250 Oc)"},
-	{ ID = "Alien", Name = "Alien Egg", Label = "Alien (100 No)"},
-	{ ID = "Martian", Name = "Martian Egg", Label = "Martian (3.5 De)"},
+	{ ID = "Atlantis", Name = "Atlantis Egg", Label = "Atlantis (50 Sx)" },
+	{ ID = "Kraken", Name = "Kraken Egg", Label = "Kraken (2 Sp)" },
+	{ ID = "Abyss", Name = "Abyss Egg", Label = "Abyss (75 Sp)" },
+	{ ID = "Space", Name = "Space Egg", Label = "Space (250 Oc)" },
+	{ ID = "Alien", Name = "Alien Egg", Label = "Alien (100 No)" },
+	{ ID = "Martian", Name = "Martian Egg", Label = "Martian (3.5 De)" },
 }
 
 local eggButtons = {}
 local selectedEggID = nil
-local isScriptActive = true 
-local isTraining = false 
+local isScriptActive = true
+local isTraining = false
 
 for i, data in ipairs(eggData) do
 	local btn = Instance.new("TextButton")
@@ -202,7 +218,7 @@ task.spawn(function()
 			end
 			task.wait(0.1)
 		else
-			task.wait(0.1) 
+			task.wait(0.1)
 		end
 	end
 end)
@@ -212,9 +228,9 @@ task.spawn(function()
 		if selectedEggID and eggButtons[selectedEggID] then
 			local eggName = eggButtons[selectedEggID].Data.Name
 			pcall(function() hatchEvent:FireServer(eggName, "Triple") end)
-			task.wait(1) 
+			task.wait(1)
 		else
-			task.wait(0.2) 
+			task.wait(0.2)
 		end
 	end
 end)
@@ -317,7 +333,7 @@ end)
 -- Logika Hotkey RightShift untuk Sembunyikan GUI
 toggleConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	-- Pengecekan ini memastikan UI tidak tertutup saat kamu mengetik di Chat
-	if gameProcessed then return end 
+	if gameProcessed then return end
 
 	if input.KeyCode == Enum.KeyCode.RightShift then
 		screenGui.Enabled = not screenGui.Enabled
