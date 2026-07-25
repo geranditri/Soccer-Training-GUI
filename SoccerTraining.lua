@@ -16,7 +16,7 @@ screenGui.Parent = playerGui
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 220, 0, 185)
+mainFrame.Size = UDim2.new(0, 220, 0, 220)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -99,6 +99,30 @@ openHatchMenuBtn.TextSize = 14
 openHatchMenuBtn.Parent = mainView
 Instance.new("UICorner", openHatchMenuBtn).CornerRadius = UDim.new(0, 6)
 
+local antiAfkButton = Instance.new("TextButton")
+antiAfkButton.Name = "AntiAfkButton"
+antiAfkButton.Size = UDim2.new(0, 200, 0, 32)
+antiAfkButton.Position = UDim2.new(0, 10, 0, 95) -- Posisikan di bawah tombol telur
+antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+antiAfkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+antiAfkButton.Text = "Anti AFK: OFF"
+antiAfkButton.Font = Enum.Font.SourceSansBold
+antiAfkButton.TextSize = 14
+antiAfkButton.Parent = mainView
+Instance.new("UICorner", antiAfkButton).CornerRadius = UDim.new(0, 6)
+
+-- Logika klik tombol Anti-AFK
+antiAfkButton.MouseButton1Click:Connect(function()
+	isAntiAfk = not isAntiAfk
+	if isAntiAfk then
+		antiAfkButton.Text = "Anti AFK: ON"
+		antiAfkButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+	else
+		antiAfkButton.Text = "Anti AFK: OFF"
+		antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+	end
+end)
+
 -- ====================================================
 -- 3. VIEW 2: HALAMAN SUB-MENU (HATCH EGG)
 -- ====================================================
@@ -159,6 +183,7 @@ local eggButtons = {}
 local selectedEggID = nil
 local isScriptActive = true
 local isTraining = false
+local isAntiAfk = false
 
 for i, data in ipairs(eggData) do
 	local btn = Instance.new("TextButton")
@@ -356,4 +381,15 @@ closeButton.MouseButton1Click:Connect(function()
 	end
 	
 	screenGui:Destroy()
+end)
+
+-- Anti AFK
+task.spawn(function()
+	local VirtualUser = game:GetService("VirtualUser")
+	player.Idled:Connect(function()
+		if isAntiAfk and isScriptActive then
+			VirtualUser:CaptureController()
+			VirtualUser:ClickButton2(Vector2.new())
+		end
+	end)
 end)
