@@ -11,6 +11,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SoccerTrainingGui"
 screenGui.ResetOnSpawn = false
+screenGui.DisplayOrder = 999
 screenGui.Parent = playerGui
 
 local mainFrame = Instance.new("Frame")
