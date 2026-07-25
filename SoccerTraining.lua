@@ -262,14 +262,30 @@ local dragConnection
 local toggleConnection -- Variabel untuk hotkey
 
 -- Logika Draggable
+-- Logika Draggable dengan Pembatas Layar (Clamp)
 local function update(input)
 	local delta = input.Position - dragStart
-	mainFrame.Position = UDim2.new(
-		startPos.X.Scale,
-		startPos.X.Offset + delta.X,
-		startPos.Y.Scale,
-		startPos.Y.Offset + delta.Y
-	)
+	
+	-- 1. Hitung target posisi baru berdasarkan gerakan mouse
+	local targetX = (startPos.X.Scale * screenGui.AbsoluteSize.X) + startPos.X.Offset + delta.X
+	local targetY = (startPos.Y.Scale * screenGui.AbsoluteSize.Y) + startPos.Y.Offset + delta.Y
+	
+	-- 2. Hitung setengah dari ukuran UI (karena AnchorPoint kita 0.5, 0.5 di tengah frame)
+	local halfWidth = mainFrame.AbsoluteSize.X / 2
+	local halfHeight = mainFrame.AbsoluteSize.Y / 2
+	
+	-- 3. Tentukan batas minimal dan maksimal layar
+	local minX = halfWidth
+	local maxX = screenGui.AbsoluteSize.X - halfWidth
+	local minY = halfHeight
+	local maxY = screenGui.AbsoluteSize.Y - halfHeight
+	
+	-- 4. Kunci posisi agar tidak keluar dari batas layar
+	local clampedX = math.clamp(targetX, minX, maxX)
+	local clampedY = math.clamp(targetY, minY, maxY)
+	
+	-- 5. Terapkan posisi yang sudah dikunci
+	mainFrame.Position = UDim2.new(0, clampedX, 0, clampedY)
 end
 
 mainFrame.InputBegan:Connect(function(input)
