@@ -133,12 +133,12 @@ local eggData = {
 	{ ID = "Mystic", Name = "Mystic Egg", Label = "Mystic (1 Qd)" },
 	{ ID = "WorldCup", Name = "World Cup Egg", Label = "World Cup (750 Qd)" },
 	{ ID = "Dice", Name = "Dice Egg", Label = "Dice (150 Qn)" },
-	{ ID = "Atlantis"; Name = "Atlantis Egg", Label = "Atlantis (50 Sx)"},
-	{ ID = "Kraken"; Name = "Kraken Egg", Label = "Kraken (2 Sp)"},
-	{ ID = "Abyss"; Name = "Abyss Egg", Label = "Abyss (75 Sp)"},
-	{ ID = "Space"; Name = "Space Egg", Label = "Space (250 Oc)"},
-	{ ID = "Alien"; Name = "Alien Egg", Label = "Alien (100 No)"},
-	{ ID = "Martian"; Name = "Martian Egg", Label = "Martian (3.5 De)"},
+	{ ID = "Atlantis", Name = "Atlantis Egg", Label = "Atlantis (50 Sx)"},
+	{ ID = "Kraken", Name = "Kraken Egg", Label = "Kraken (2 Sp)"},
+	{ ID = "Abyss", Name = "Abyss Egg", Label = "Abyss (75 Sp)"},
+	{ ID = "Space", Name = "Space Egg", Label = "Space (250 Oc)"},
+	{ ID = "Alien", Name = "Alien Egg", Label = "Alien (100 No)"},
+	{ ID = "Martian", Name = "Martian Egg", Label = "Martian (3.5 De)"},
 }
 
 local eggButtons = {}
