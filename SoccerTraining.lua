@@ -51,19 +51,17 @@ closeButton.Font = Enum.Font.SourceSansBold
 closeButton.TextSize = 16
 closeButton.Parent = mainFrame
 
--- ====================================================
 -- WATERMARK SCRIPT
--- ====================================================
 local watermarkLabel = Instance.new("TextLabel")
 watermarkLabel.Name = "WatermarkLabel"
-watermarkLabel.Size = UDim2.new(0, 100, 0, 15)
-watermarkLabel.Position = UDim2.new(1, -105, 1, -15) -- Posisi di pojok kanan bawah UI
+watermarkLabel.Size = UDim2.new(0, 80, 0, 16)
+watermarkLabel.Position = UDim2.new(1, -90, 1, -18) -- Posisikan sejajar di kanan
 watermarkLabel.BackgroundTransparency = 1
-watermarkLabel.Text = "Made by TroubleMaker" -- UBAH TEKS INI SESUAI NAMA KAMU
-watermarkLabel.TextColor3 = Color3.fromRGB(100, 100, 100) -- Warna abu-abu samar
+watermarkLabel.Text = "By TroubleMaker" -- UBAH NAMAMU DI SINI
+watermarkLabel.TextColor3 = Color3.fromRGB(100, 100, 100)
 watermarkLabel.Font = Enum.Font.SourceSansBold
-watermarkLabel.TextSize = 10
-watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right
+watermarkLabel.TextSize = 11
+watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right -- Bikin teksnya rata kanan
 watermarkLabel.Parent = mainFrame
 
 -- ====================================================
@@ -184,13 +182,14 @@ end)
 
 local footerLabel = Instance.new("TextLabel")
 footerLabel.Name = "FooterLabel"
-footerLabel.Size = UDim2.new(1, 0, 0, 16)
-footerLabel.Position = UDim2.new(0, 0, 1, -18)
+footerLabel.Size = UDim2.new(0, 130, 0, 16)
+footerLabel.Position = UDim2.new(0, 10, 1, -18) -- Geser ke kiri
 footerLabel.BackgroundTransparency = 1
-footerLabel.Text = "[RightShift] to Hide/Show"
+footerLabel.Text = "[RightShift] Hide/Show"
 footerLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
 footerLabel.Font = Enum.Font.SourceSansItalic
 footerLabel.TextSize = 11
+footerLabel.TextXAlignment = Enum.TextXAlignment.Left -- Bikin teksnya rata kiri
 footerLabel.Parent = mainFrame
 
 -- ====================================================
