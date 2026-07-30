@@ -55,17 +55,17 @@ closeButton.Parent = mainFrame
 local watermarkLabel = Instance.new("TextLabel")
 watermarkLabel.Name = "WatermarkLabel"
 watermarkLabel.Size = UDim2.new(0, 80, 0, 16)
-watermarkLabel.Position = UDim2.new(1, -90, 1, -18) -- Posisikan sejajar di kanan
+watermarkLabel.Position = UDim2.new(1, -90, 1, -18)
 watermarkLabel.BackgroundTransparency = 1
-watermarkLabel.Text = "By TroubleMaker" -- UBAH NAMAMU DI SINI
+watermarkLabel.Text = "By TroubleMaker"
 watermarkLabel.TextColor3 = Color3.fromRGB(100, 100, 100)
 watermarkLabel.Font = Enum.Font.SourceSansBold
 watermarkLabel.TextSize = 11
-watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right -- Bikin teksnya rata kanan
+watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right
 watermarkLabel.Parent = mainFrame
 
 -- ====================================================
--- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING)
+-- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING & ANTI-AFK)
 -- ====================================================
 local mainView = Instance.new("Frame")
 mainView.Name = "MainView"
@@ -102,7 +102,7 @@ Instance.new("UICorner", openHatchMenuBtn).CornerRadius = UDim.new(0, 6)
 local antiAfkButton = Instance.new("TextButton")
 antiAfkButton.Name = "AntiAfkButton"
 antiAfkButton.Size = UDim2.new(0, 200, 0, 32)
-antiAfkButton.Position = UDim2.new(0, 10, 0, 95) -- Posisikan di bawah tombol telur
+antiAfkButton.Position = UDim2.new(0, 10, 0, 95)
 antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 antiAfkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 antiAfkButton.Text = "Anti AFK: OFF"
@@ -110,18 +110,6 @@ antiAfkButton.Font = Enum.Font.SourceSansBold
 antiAfkButton.TextSize = 14
 antiAfkButton.Parent = mainView
 Instance.new("UICorner", antiAfkButton).CornerRadius = UDim.new(0, 6)
-
--- Logika klik tombol Anti-AFK
-antiAfkButton.MouseButton1Click:Connect(function()
-	isAntiAfk = not isAntiAfk
-	if isAntiAfk then
-		antiAfkButton.Text = "Anti AFK: ON"
-		antiAfkButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-	else
-		antiAfkButton.Text = "Anti AFK: OFF"
-		antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-	end
-end)
 
 -- ====================================================
 -- 3. VIEW 2: HALAMAN SUB-MENU (HATCH EGG)
@@ -208,13 +196,13 @@ end)
 local footerLabel = Instance.new("TextLabel")
 footerLabel.Name = "FooterLabel"
 footerLabel.Size = UDim2.new(0, 130, 0, 16)
-footerLabel.Position = UDim2.new(0, 10, 1, -18) -- Geser ke kiri
+footerLabel.Position = UDim2.new(0, 10, 1, -18)
 footerLabel.BackgroundTransparency = 1
 footerLabel.Text = "[RightShift] Hide/Show"
 footerLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
 footerLabel.Font = Enum.Font.SourceSansItalic
 footerLabel.TextSize = 11
-footerLabel.TextXAlignment = Enum.TextXAlignment.Left -- Bikin teksnya rata kiri
+footerLabel.TextXAlignment = Enum.TextXAlignment.Left
 footerLabel.Parent = mainFrame
 
 -- ====================================================
@@ -259,6 +247,27 @@ task.spawn(function()
 	end
 end)
 
+-- SISTEM ANTI-AFK GABUNGAN (INFINITE YIELD METHOD)
+task.spawn(function()
+	local VirtualUser = game:GetService("VirtualUser")
+	player.Idled:Connect(function()
+		if isAntiAfk and isScriptActive then
+			if getconnections then
+				for _, connection in pairs(getconnections(player.Idled)) do
+					if connection["Disable"] then
+						connection["Disable"](connection)
+					elseif connection["Disconnect"] then
+						connection["Disconnect"](connection)
+					end
+				end
+			else
+				VirtualUser:CaptureController()
+				VirtualUser:ClickButton2(Vector2.new())
+			end
+		end
+	end)
+end)
+
 trainButton.MouseButton1Click:Connect(function()
 	isTraining = not isTraining
 	if isTraining then
@@ -267,6 +276,17 @@ trainButton.MouseButton1Click:Connect(function()
 	else
 		trainButton.Text = "Auto Train: OFF"
 		trainButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+	end
+end)
+
+antiAfkButton.MouseButton1Click:Connect(function()
+	isAntiAfk = not isAntiAfk
+	if isAntiAfk then
+		antiAfkButton.Text = "Anti AFK: ON"
+		antiAfkButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+	else
+		antiAfkButton.Text = "Anti AFK: OFF"
+		antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 	end
 end)
 
@@ -299,32 +319,24 @@ end
 -- ====================================================
 local dragging, dragInput, dragStart, startPos
 local dragConnection
-local toggleConnection -- Variabel untuk hotkey
+local toggleConnection
 
--- Logika Draggable
--- Logika Draggable dengan Pembatas Layar (Clamp)
 local function update(input)
 	local delta = input.Position - dragStart
-	
-	-- 1. Hitung target posisi baru berdasarkan gerakan mouse
 	local targetX = (startPos.X.Scale * screenGui.AbsoluteSize.X) + startPos.X.Offset + delta.X
 	local targetY = (startPos.Y.Scale * screenGui.AbsoluteSize.Y) + startPos.Y.Offset + delta.Y
 	
-	-- 2. Hitung setengah dari ukuran UI (karena AnchorPoint kita 0.5, 0.5 di tengah frame)
 	local halfWidth = mainFrame.AbsoluteSize.X / 2
 	local halfHeight = mainFrame.AbsoluteSize.Y / 2
 	
-	-- 3. Tentukan batas minimal dan maksimal layar
 	local minX = halfWidth
 	local maxX = screenGui.AbsoluteSize.X - halfWidth
 	local minY = halfHeight
 	local maxY = screenGui.AbsoluteSize.Y - halfHeight
 	
-	-- 4. Kunci posisi agar tidak keluar dari batas layar
 	local clampedX = math.clamp(targetX, minX, maxX)
 	local clampedY = math.clamp(targetY, minY, maxY)
 	
-	-- 5. Terapkan posisi yang sudah dikunci
 	mainFrame.Position = UDim2.new(0, clampedX, 0, clampedY)
 end
 
@@ -354,20 +366,17 @@ dragConnection = UserInputService.InputChanged:Connect(function(input)
 	end
 end)
 
--- Logika Hotkey RightShift untuk Sembunyikan GUI
 toggleConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	-- Pengecekan ini memastikan UI tidak tertutup saat kamu mengetik di Chat
 	if gameProcessed then return end
-
 	if input.KeyCode == Enum.KeyCode.RightShift then
 		screenGui.Enabled = not screenGui.Enabled
 	end
 end)
 
--- Tombol X (Destroy & Cleanup Memory)
 closeButton.MouseButton1Click:Connect(function()
 	isScriptActive = false
 	isTraining = false
+	isAntiAfk = false
 	selectedEggID = nil
 	
 	if dragConnection then
@@ -381,15 +390,4 @@ closeButton.MouseButton1Click:Connect(function()
 	end
 	
 	screenGui:Destroy()
-end)
-
--- Anti AFK
-task.spawn(function()
-	local VirtualUser = game:GetService("VirtualUser")
-	player.Idled:Connect(function()
-		if isAntiAfk and isScriptActive then
-			VirtualUser:CaptureController()
-			VirtualUser:ClickButton2(Vector2.new())
-		end
-	end)
 end)
