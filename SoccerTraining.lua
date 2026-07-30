@@ -93,7 +93,7 @@ openHatchMenuBtn.Size = UDim2.new(0, 200, 0, 32)
 openHatchMenuBtn.Position = UDim2.new(0, 10, 0, 55)
 openHatchMenuBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 150)
 openHatchMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-openHatchMenuBtn.Text = "🥚 Buka Menu Telur"
+openHatchMenuBtn.Text = "🥚 Hatch Menu"
 openHatchMenuBtn.Font = Enum.Font.SourceSansBold
 openHatchMenuBtn.TextSize = 14
 openHatchMenuBtn.Parent = mainView
@@ -128,7 +128,7 @@ backButton.Size = UDim2.new(0, 200, 0, 22)
 backButton.Position = UDim2.new(0, 10, 0, 0)
 backButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 backButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-backButton.Text = "⬅️ Kembali"
+backButton.Text = "⬅️ Back"
 backButton.Font = Enum.Font.SourceSansBold
 backButton.TextSize = 12
 backButton.Parent = hatchView
@@ -165,6 +165,7 @@ local eggData = {
 	{ ID = "Space", Name = "Space Egg", Label = "Space (250 Oc)" },
 	{ ID = "Alien", Name = "Alien Egg", Label = "Alien (100 No)" },
 	{ ID = "Martian", Name = "Martian Egg", Label = "Martian (3.5 De)" },
+	{ ID = "7.5M", Name = "7.5M Egg", Label = "7.5M (7.5 M)" },
 }
 
 local eggButtons = {}
