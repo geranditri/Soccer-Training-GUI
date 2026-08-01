@@ -1,6 +1,18 @@
+-- ====================================================
+-- PENGAMAN ID GAME (PLACE ID CHECK)
+-- ====================================================
+local TARGET_GAME_ID = 15308782509
+
+if game.PlaceId ~= TARGET_GAME_ID then
+	warn("Wrong Game !!")
+	return 
+end
+
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TeleportService = game:GetService("TeleportService")
+local GuiService = game:GetService("GuiService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -16,7 +28,8 @@ screenGui.Parent = playerGui
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 220, 0, 220)
+-- Sedikit menyesuaikan ukuran frame karena tombol berkurang 1
+mainFrame.Size = UDim2.new(0, 220, 0, 180) 
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -65,7 +78,7 @@ watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right
 watermarkLabel.Parent = mainFrame
 
 -- ====================================================
--- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING & ANTI-AFK)
+-- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING)
 -- ====================================================
 local mainView = Instance.new("Frame")
 mainView.Name = "MainView"
@@ -99,18 +112,6 @@ openHatchMenuBtn.TextSize = 14
 openHatchMenuBtn.Parent = mainView
 Instance.new("UICorner", openHatchMenuBtn).CornerRadius = UDim.new(0, 6)
 
-local antiAfkButton = Instance.new("TextButton")
-antiAfkButton.Name = "AntiAfkButton"
-antiAfkButton.Size = UDim2.new(0, 200, 0, 32)
-antiAfkButton.Position = UDim2.new(0, 10, 0, 95)
-antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-antiAfkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-antiAfkButton.Text = "Anti AFK: OFF"
-antiAfkButton.Font = Enum.Font.SourceSansBold
-antiAfkButton.TextSize = 14
-antiAfkButton.Parent = mainView
-Instance.new("UICorner", antiAfkButton).CornerRadius = UDim.new(0, 6)
-
 -- ====================================================
 -- 3. VIEW 2: HALAMAN SUB-MENU (HATCH EGG)
 -- ====================================================
@@ -136,7 +137,7 @@ Instance.new("UICorner", backButton).CornerRadius = UDim.new(0, 4)
 
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Name = "EggScrollFrame"
-scrollFrame.Size = UDim2.new(0, 200, 0, 105)
+scrollFrame.Size = UDim2.new(0, 200, 0, 65)
 scrollFrame.Position = UDim2.new(0, 10, 0, 26)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
@@ -172,7 +173,6 @@ local eggButtons = {}
 local selectedEggID = nil
 local isScriptActive = true
 local isTraining = false
-local isAntiAfk = false
 
 for i, data in ipairs(eggData) do
 	local btn = Instance.new("TextButton")
@@ -248,11 +248,11 @@ task.spawn(function()
 	end
 end)
 
--- SISTEM ANTI-AFK GABUNGAN (INFINITE YIELD METHOD)
+-- SISTEM ANTI-AFK
 task.spawn(function()
 	local VirtualUser = game:GetService("VirtualUser")
 	player.Idled:Connect(function()
-		if isAntiAfk and isScriptActive then
+		if isScriptActive then
 			if getconnections then
 				for _, connection in pairs(getconnections(player.Idled)) do
 					if connection["Disable"] then
@@ -277,17 +277,6 @@ trainButton.MouseButton1Click:Connect(function()
 	else
 		trainButton.Text = "Auto Train: OFF"
 		trainButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-	end
-end)
-
-antiAfkButton.MouseButton1Click:Connect(function()
-	isAntiAfk = not isAntiAfk
-	if isAntiAfk then
-		antiAfkButton.Text = "Anti AFK: ON"
-		antiAfkButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-	else
-		antiAfkButton.Text = "Anti AFK: OFF"
-		antiAfkButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 	end
 end)
 
@@ -377,7 +366,6 @@ end)
 closeButton.MouseButton1Click:Connect(function()
 	isScriptActive = false
 	isTraining = false
-	isAntiAfk = false
 	selectedEggID = nil
 	
 	if dragConnection then
@@ -391,4 +379,25 @@ closeButton.MouseButton1Click:Connect(function()
 	end
 	
 	screenGui:Destroy()
+end)
+
+-- ====================================================
+-- 6. AUTO RECONNECT (JIKA KONEKSI TERPUTUS/KICKED)
+-- ====================================================
+GuiService.ErrorMessageChanged:Connect(function()
+	warn("Disconnected (Auto Reconnect)...")
+	task.wait(2)
+	pcall(function()
+		TeleportService:Teleport(game.PlaceId, player)
+	end)
+end)
+
+pcall(function()
+	local CoreGui = game:GetService("CoreGui")
+	CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(child)
+		if child.Name == 'ErrorPrompt' then
+			task.wait(2)
+			TeleportService:Teleport(game.PlaceId, player)
+		end
+	end)
 end)
