@@ -1,5 +1,5 @@
 -- ====================================================
--- PENGAMAN ID GAME (PLACE ID CHECK)
+-- ID GAME CHECK
 -- ====================================================
 local TARGET_GAME_ID = 15308782509
 
@@ -18,7 +18,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 -- ====================================================
--- 1. SETUP GUI UTAMA
+-- 1. SETUP MAIN GUI
 -- ====================================================
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SoccerTrainingGui"
@@ -28,7 +28,6 @@ screenGui.Parent = playerGui
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
--- Sedikit menyesuaikan ukuran frame karena tombol berkurang 1
 mainFrame.Size = UDim2.new(0, 220, 0, 180) 
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -64,7 +63,7 @@ closeButton.Font = Enum.Font.SourceSansBold
 closeButton.TextSize = 16
 closeButton.Parent = mainFrame
 
--- WATERMARK SCRIPT
+-- WATERMARK
 local watermarkLabel = Instance.new("TextLabel")
 watermarkLabel.Name = "WatermarkLabel"
 watermarkLabel.Size = UDim2.new(0, 80, 0, 16)
@@ -78,7 +77,7 @@ watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right
 watermarkLabel.Parent = mainFrame
 
 -- ====================================================
--- 2. VIEW 1: HALAMAN UTAMA (AUTO TRAINING)
+-- 2. VIEW 1: MAIN MENU (AUTO TRAINING)
 -- ====================================================
 local mainView = Instance.new("Frame")
 mainView.Name = "MainView"
@@ -113,7 +112,7 @@ openHatchMenuBtn.Parent = mainView
 Instance.new("UICorner", openHatchMenuBtn).CornerRadius = UDim.new(0, 6)
 
 -- ====================================================
--- 3. VIEW 2: HALAMAN SUB-MENU (HATCH EGG)
+-- 3. VIEW 2: SUB-MENU (HATCH EGG)
 -- ====================================================
 local hatchView = Instance.new("Frame")
 hatchView.Name = "HatchView"
@@ -207,7 +206,7 @@ footerLabel.TextXAlignment = Enum.TextXAlignment.Left
 footerLabel.Parent = mainFrame
 
 -- ====================================================
--- 4. REMOTE EVENT & LOGIKA SISTEM UTAMA
+-- 4. REMOTE EVENT & MAIN SYSTEM
 -- ====================================================
 local knitServices = ReplicatedStorage:WaitForChild("Library"):WaitForChild("Knit"):WaitForChild("Services")
 local trainEvent = knitServices:WaitForChild("TrainingService"):WaitForChild("RE"):WaitForChild("Train")
@@ -248,7 +247,7 @@ task.spawn(function()
 	end
 end)
 
--- SISTEM ANTI-AFK
+-- ANTI-AFK
 task.spawn(function()
 	local VirtualUser = game:GetService("VirtualUser")
 	player.Idled:Connect(function()
@@ -382,7 +381,7 @@ closeButton.MouseButton1Click:Connect(function()
 end)
 
 -- ====================================================
--- 6. AUTO RECONNECT (JIKA KONEKSI TERPUTUS/KICKED)
+-- 6. AUTO RECONNECT
 -- ====================================================
 GuiService.ErrorMessageChanged:Connect(function()
 	warn("Disconnected (Auto Reconnect)...")
