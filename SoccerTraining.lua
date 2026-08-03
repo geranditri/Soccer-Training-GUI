@@ -239,7 +239,7 @@ task.spawn(function()
 	while isScriptActive do
 		if selectedEggID and eggButtons[selectedEggID] then
 			local eggName = eggButtons[selectedEggID].Data.Name
-			pcall(function() hatchEvent:FireServer(eggName, "Triple") end)
+			pcall(function() hatchEvent:FireServer(eggName, "Octo") end)
 			task.wait(1)
 		else
 			task.wait(0.2)
